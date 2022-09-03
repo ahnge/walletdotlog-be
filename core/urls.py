@@ -19,6 +19,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from users.views import TokenBlackListView
 
 urlpatterns = [
     path('api/wallet/', include('wallet.api.urls')),
@@ -26,6 +27,8 @@ urlpatterns = [
     # simple jwt
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/blacklist/', TokenBlackListView.as_view(),
+         name='token_blacklist'),
     # django admin
     path('admin/', admin.site.urls),
 ]
