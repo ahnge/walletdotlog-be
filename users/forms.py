@@ -1,4 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from dj_rest_auth.forms import AllAuthPasswordResetForm
 
 from .models import CustomUser
 

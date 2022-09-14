@@ -1,22 +1,30 @@
+from django.db import transaction
 from rest_framework import serializers
-from django.contrib.auth.password_validation import validate_password
-from .models import CustomUser
+from dj_rest_auth.registration.serializers import RegisterSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
-class RegisterUserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(
-        write_only=True, required=True, validators=[validate_password])
-    password2 = serializers.CharField(write_only=True, required=True)
+class CustomRegisterSerializer(RegisterSerializer):
+    full_name = serializers.CharField(max_length=150)
 
-    class Meta:
-        model = CustomUser
-        fields = ['email', 'full_name', 'password', 'password2']
+    @transaction.atomic
+    def save(self, request):
+        user = super().save(request)
+        print(self.data)
+        user.full_name = self.data.get('full_name')
+        user.save()
+        return user
 
-    def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError(
-                {"password": "Password fields didn't match."})
-        return attrs
 
-    def create(self, validated_data):
-        return CustomUser.objects.create_user(**validated_data)
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['profile_img'] = user.image_url
+        token['full_name'] = user.full_name
+        token['email'] = user.email
+        # ...
+
+        return token

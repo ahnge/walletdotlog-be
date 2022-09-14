@@ -15,20 +15,35 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
-from users.views import TokenBlackListView
+from dj_rest_auth.views import PasswordResetConfirmView
+from dj_rest_auth.registration.views import VerifyEmailView, ConfirmEmailView
+
+from users.views import GoogleLogin, GitHubLogin
 
 urlpatterns = [
+    # my_apps
     path('api/wallet/', include('wallet.api.urls')),
     path('api/users/', include('users.urls')),
-    # simple jwt
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/token/blacklist/', TokenBlackListView.as_view(),
-         name='token_blacklist'),
+
+    # dj_rest_auth
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path(
+        'dj-rest-auth/registration/account-confirm-email/<str:key>/',
+        ConfirmEmailView.as_view(),
+    ),
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('dj-rest-auth/account-confirm-email/', VerifyEmailView.as_view(),
+         name='account_email_verification_sent'),
+    path(
+        'rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/',
+        PasswordResetConfirmView.as_view(), name='password_reset_confirm',
+    ),
+
+    # social authentications
+    path('dj-rest-auth/google/', GoogleLogin.as_view(), name='google_login'),
+    path('dj-rest-auth/github/', GitHubLogin.as_view(), name='github_login'),
+    path('accounts/', include('allauth.urls')),
+
     # django admin
     path('admin/', admin.site.urls),
 ]
