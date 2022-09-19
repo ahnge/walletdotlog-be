@@ -21,6 +21,7 @@ class Log(models.Model):
         ('n', 'negative')
     ]
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+    amount = models.IntegerField(default=0)
     description = models.CharField(max_length=256, null=True, blank=True)
     log_type = models.CharField(choices=TYPES, max_length=2)
 
