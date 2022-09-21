@@ -9,4 +9,6 @@ urlpatterns = [
          name='wallet_list_create'),
     path('<int:pk>/log/list-create/',
          views.LogListCreate.as_view(), name='log_list_create'),
+    path('<int:pk>/log/list/latest/',
+         views.LatestLogsList.as_view(), name='latest_log_list'),
 ]
