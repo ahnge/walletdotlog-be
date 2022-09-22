@@ -1,17 +1,19 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, CreateAPIView
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from .serializers import WalletSerializer, LogSerializer
-from wallet.models import Wallet, Log
+from wallet.models import Wallet
 from .utils import check_and_save
 
 
 class WalletListCreate(ListCreateAPIView):
     serializer_class = WalletSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = None
     # queryset = Wallet.objects.all()
 
     def get_queryset(self):
@@ -22,15 +24,17 @@ class WalletListCreate(ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class LogListCreate(APIView):
+class LogListCreate(APIView, PageNumberPagination):
     permission_classes = [IsAuthenticated]
 
     def get(self, req, pk):
         wallet = get_object_or_404(Wallet, pk=pk)
         if wallet.owner == self.request.user:
             logs = wallet.log_set.all()
-            serializer = LogSerializer(logs, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+
+            results = self.paginate_queryset(logs, req, view=self)
+            serializer = LogSerializer(results, many=True)
+            return self.get_paginated_response(serializer.data)
         return Response({"message": "You can't see logs you don't own."}, status=status.HTTP_403_FORBIDDEN)
 
     def post(self, req, pk):
