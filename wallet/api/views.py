@@ -30,7 +30,7 @@ class LogListCreate(APIView, PageNumberPagination):
     def get(self, req, pk):
         wallet = get_object_or_404(Wallet, pk=pk)
         if wallet.owner == self.request.user:
-            logs = wallet.log_set.all()
+            logs = wallet.log_set.all().order_by("-created_at")
 
             results = self.paginate_queryset(logs, req, view=self)
             serializer = LogSerializer(results, many=True)
