@@ -9,7 +9,7 @@ def add_name_and_img(sender, instance, created, **kwargs):
         user = instance.user
         user.full_name = instance.extra_data.get('name')
         if instance.provider == "github":
-            user.image_url = instance.extra_data.get('avatar_url')
+            user.social_image = instance.extra_data.get('avatar_url')
         if instance.provider == "google":
-            user.image_url = instance.extra_data.get('picture')
+            user.social_image = instance.extra_data.get('picture')
         user.save()

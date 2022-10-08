@@ -5,7 +5,7 @@ from users.models import CustomUser
 
 
 class Wallet(models.Model):
-    name = models.CharField(max_length=32, unique=True)
+    name = models.CharField(max_length=32, unique=False)
     amount = models.IntegerField(default=0)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 

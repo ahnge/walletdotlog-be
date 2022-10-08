@@ -144,6 +144,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -187,8 +190,9 @@ REST_FRAMEWORK = {
 }
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'users.serializers.CustomRegisterSerializer',
+    'REGISTER_SERIALIZER': 'users.serializers.CustomRegisterSerializer',
     'JWT_TOKEN_CLAIMS_SERIALIZER': 'users.serializers.MyTokenObtainPairSerializer',
+    'USER_DETAILS_SERIALIZER': 'users.serializers.CustomUserDetailSerializer'
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {

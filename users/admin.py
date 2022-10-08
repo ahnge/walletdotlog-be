@@ -13,13 +13,13 @@ class CustomUserAdmin(UserAdmin):
     list_display = ('email', 'id', 'full_name', 'is_active', 'is_staff')
     list_filter = ('email', 'full_name', 'is_active', 'is_staff')
     fieldsets = (
-        (None, {'fields': ('email', 'full_name', 'image_url')}),
+        (None, {'fields': ('email', 'full_name', 'image', 'social_image')}),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'full_name', 'image_url', 'password1', 'password2', 'is_active', 'is_staff')}
+            'fields': ('email', 'full_name', 'image', 'social_image', 'password1', 'password2', 'is_active', 'is_staff')}
          ),
     )
 

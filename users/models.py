@@ -41,8 +41,10 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(help_text='email address', unique=True)
     full_name = models.CharField(max_length=150)
-    image_url = models.CharField(
-        max_length=500, default="https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg")
+    image = models.ImageField(
+        upload_to='user_profile', default='user_profile/default_profile.jpg', null=True, blank=True)
+    social_image = models.CharField(
+        max_length=500, null=True, blank=True, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
 
     is_staff = models.BooleanField(default=False)

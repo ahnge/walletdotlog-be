@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
+from dj_rest_auth.serializers import UserDetailsSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -22,9 +23,24 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         # Add custom claims
-        token['profile_img'] = user.image_url
         token['full_name'] = user.full_name
         token['email'] = user.email
+        if user.image.url == '/media/user_profile/default_profile.jpg':
+            if user.social_image:
+                token['profile_img'] = user.social_image
+            else:
+                token['profile_img'] = f"http://localhost:8000{user.image.url}"
+        else:
+            token['profile_img'] = f"http://localhost:8000{user.image.url}"
+
         # ...
 
         return token
+
+
+class CustomUserDetailSerializer(UserDetailsSerializer):
+    full_name = serializers.CharField(max_length=150)
+    image = serializers.ImageField()
+
+    class Meta(UserDetailsSerializer.Meta):
+        fields = UserDetailsSerializer.Meta.fields + ('full_name', 'image')
