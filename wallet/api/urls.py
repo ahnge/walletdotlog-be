@@ -7,6 +7,7 @@ app_name = 'wallet_api'
 urlpatterns = [
     path('list-create/', views.WalletListCreate.as_view(),
          name='wallet_list_create'),
+    path('<int:pk>/detail/', views.WalletDetail.as_view(), name="wallet_detail"),
     path('<int:pk>/log/list-create/',
          views.LogListCreate.as_view(), name='log_list_create'),
     path('<int:pk>/log/list/latest/',

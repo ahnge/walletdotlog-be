@@ -24,6 +24,27 @@ class WalletListCreate(ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
+class WalletDetail(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, req, pk):
+        wallet = get_object_or_404(Wallet, pk=pk)
+        serializer = WalletSerializer(data=req.data)
+        if wallet.owner == self.request.user:
+            serializer.is_valid(raise_exception=True)
+            wallet.name = serializer.data["name"]
+            wallet.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"message": "You can't update wallet you don't own."}, status=status.HTTP_403_FORBIDDEN)
+
+    def delete(self, req, pk):
+        wallet = get_object_or_404(Wallet, pk=pk)
+        if wallet.owner == self.request.user:
+            wallet.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "You can't delete wallet you don't own."}, status=status.HTTP_403_FORBIDDEN)
+
+
 class LogListCreate(APIView, PageNumberPagination):
     permission_classes = [IsAuthenticated]
 
