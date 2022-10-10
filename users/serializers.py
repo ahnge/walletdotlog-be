@@ -29,9 +29,9 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
             if user.social_image:
                 token['profile_img'] = user.social_image
             else:
-                token['profile_img'] = f"http://localhost:8000{user.image.url}"
+                token['profile_img'] = f"{user.image.url}"
         else:
-            token['profile_img'] = f"http://localhost:8000{user.image.url}"
+            token['profile_img'] = f"{user.image.url}"
 
         # ...
 
