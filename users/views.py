@@ -9,13 +9,13 @@ from rest_framework.generics import UpdateAPIView
 # if you want to use Authorization Code Grant, use this
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
-    callback_url = 'http://localhost:3000/login'
+    callback_url = 'https://walletdotlog.netlify.app/login'
     client_class = OAuth2Client
 
 
 class GitHubLogin(SocialLoginView):
     adapter_class = GitHubOAuth2Adapter
-    callback_url = 'http://localhost:3000/login'
+    callback_url = 'http://walletdotlog.netlify.app/login'
     client_class = OAuth2Client
 
 
