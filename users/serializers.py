@@ -25,7 +25,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Add custom claims
         token['full_name'] = user.full_name
         token['email'] = user.email
-        if user.image.url == 'https://walletdotlog.s3.ap-southeast-1.amazonaws.com/user_profile/default_profile.jpg?AWSAccessKeyId=AKIAVEHZQZECOLLEECO3&Signature=6oZiI96AA3oUMsgky%2FCtGGpygUo%3D&Expires=1665414368':
+        if user.image.file.name == 'user_profile/default_profile.jpg':
             if user.social_image:
                 token['profile_img'] = user.social_image
             else:
