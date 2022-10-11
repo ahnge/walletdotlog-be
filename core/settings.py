@@ -255,7 +255,7 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_QUERY_EMAIL = True
 REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
 
-LOGIN_URL = 'http://localhost:3000/login'
+LOGIN_URL = 'https://walletdotlog.netlify.app/login'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
