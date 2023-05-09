@@ -24,32 +24,32 @@ from users.views import GoogleLogin, GitHubLogin
 
 urlpatterns = [
     # my_apps
-    path('api/wallet/', include('wallet.api.urls')),
-    path('api/users/', include('users.urls')),
-
+    path("api/wallet/", include("wallet.api.urls")),
+    path("api/users/", include("users.urls")),
     # dj_rest_auth
-    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path("dj-rest-auth/", include("dj_rest_auth.urls")),
     path(
-        'dj-rest-auth/registration/account-confirm-email/<str:key>/',
+        "dj-rest-auth/registration/account-confirm-email/<str:key>/",
         ConfirmEmailView.as_view(),
     ),
-    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('dj-rest-auth/account-confirm-email/', VerifyEmailView.as_view(),
-         name='account_email_verification_sent'),
+    path("dj-rest-auth/registration/", include("dj_rest_auth.registration.urls")),
     path(
-        'rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/',
-        PasswordResetConfirmView.as_view(), name='password_reset_confirm',
+        "dj-rest-auth/account-confirm-email/",
+        VerifyEmailView.as_view(),
+        name="account_email_verification_sent",
     ),
-
+    path(
+        "rest-auth/password/reset/confirm/<slug:uidb64>/<slug:token>/",
+        PasswordResetConfirmView.as_view(),
+        name="password_reset_confirm",
+    ),
     # social authentications
-    path('dj-rest-auth/google/', GoogleLogin.as_view(), name='google_login'),
-    path('dj-rest-auth/github/', GitHubLogin.as_view(), name='github_login'),
-    path('accounts/', include('allauth.urls')),
-
+    path("dj-rest-auth/google/", GoogleLogin.as_view(), name="google_login"),
+    path("dj-rest-auth/github/", GitHubLogin.as_view(), name="github_login"),
+    path("accounts/", include("allauth.urls")),
     # django admin
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
