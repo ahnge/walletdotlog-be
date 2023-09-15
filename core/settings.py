@@ -13,9 +13,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
-from dotenv import load_dotenv
+import config
 
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = config.SECRET_KEY
 
-DEBUG = os.environ.get("DEBUG") == "1"
+DEBUG = config.DEBUG == 1
 
 
 ALLOWED_HOSTS = []
@@ -57,15 +56,12 @@ INSTALLED_APPS = [
     # providers
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.github",
-    # aws
-    "storages",
 ]
 
 SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -112,12 +108,13 @@ else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
-            "OPTIONS": {
-                "read_default_file": BASE_DIR / "my.cnf",
-            },
+            "NAME": config.DB_NAME,
+            "USER": config.DB_USERNAME,
+            "PASSWORD": config.DB_PASSWORD,
+            "HOST": config.DB_HOST,
+            "PORT": "3306",
         }
     }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -154,33 +151,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = "/media/"
-
-# S3 Bucket Configurations
-
-AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
-
-AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
-
-AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
-
-AWS_S3_FILE_OVERWRITE = False
-
-AWS_DEFAULT_ACL = None
-
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
-AWS_S3_REGION_NAME = "ap-southeast-1"
-
-AWS_S3_ADDRESSING_STYLE = "virtual"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -250,21 +226,34 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 SOCIALACCOUNT_QUERY_EMAIL = True
 REST_AUTH_PW_RESET_USE_SITES_DOMAIN = True
 
-LOGIN_URL = "https://walletdotlog.site/login"
+if DEBUG:
+    LOGIN_URL = "http://localhost/login"
+else:
+    LOGIN_URL = "https://walletdotlog.site/login"
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://walletdotlog.site",
-]
-# CORS_ALLOW_ALL_ORIGINS = True
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "https://walletdotlog.site",
+    ]
 
 # Email config
-EMAIL_HOST = os.environ.get("EMAIL_HOST")
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_HOST = config.EMAIL_HOST
+EMAIL_HOST_USER = config.EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = config.DEFAULT_FROM_EMAIL
+EMAIL_HOST_PASSWORD = config.EMAIL_HOST_PASSWORD
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+# Deployment security stuff
+if not DEBUG:
+    SECURE_HSTS_SECONDS = 3600
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    CONN_MAX_AGE = 3600
