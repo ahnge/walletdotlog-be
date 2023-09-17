@@ -12,7 +12,7 @@ class CustomRegisterSerializer(RegisterSerializer):
     def save(self, request):
         user = super().save(request)
         print(self.data)
-        user.full_name = self.data.get('full_name')
+        user.full_name = self.data.get("full_name")
         user.save()
         return user
 
@@ -23,15 +23,15 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         # Add custom claims
-        token['full_name'] = user.full_name
-        token['email'] = user.email
-        if user.image.file.name == 'user_profile/default_profile.jpg':
+        token["full_name"] = user.full_name
+        token["email"] = user.email
+        if user.image.file.name == "profile_pictures/default_profile.jpeg":
             if user.social_image:
-                token['profile_img'] = user.social_image
+                token["profile_img"] = user.social_image
             else:
-                token['profile_img'] = f"{user.image.url}"
+                token["profile_img"] = f"{user.image.url}"
         else:
-            token['profile_img'] = f"{user.image.url}"
+            token["profile_img"] = f"{user.image.url}"
 
         # ...
 
@@ -43,4 +43,4 @@ class CustomUserDetailSerializer(UserDetailsSerializer):
     image = serializers.ImageField()
 
     class Meta(UserDetailsSerializer.Meta):
-        fields = UserDetailsSerializer.Meta.fields + ('full_name', 'image')
+        fields = UserDetailsSerializer.Meta.fields + ("full_name", "image")

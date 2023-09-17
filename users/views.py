@@ -15,7 +15,7 @@ class GoogleLogin(SocialLoginView):
 
 class GitHubLogin(SocialLoginView):
     adapter_class = GitHubOAuth2Adapter
-    callback_url = "http://walletdotlog.site/login"
+    callback_url = "https://walletdotlog.site/login"
     client_class = OAuth2Client
 
 
